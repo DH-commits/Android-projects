@@ -1,6 +1,7 @@
 package com.repeatit.application;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -8,9 +9,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 public class AddTaskActivity extends AppCompatActivity {
 
@@ -36,35 +35,64 @@ public class AddTaskActivity extends AppCompatActivity {
                     return;
                 }else{
                     String FILENAME = titleText.getText().toString();
-                    String url = urlText.getText().toString();
-                    String duration = durationText.getText().toString();
-                    String notes = notesText.getText().toString();
+                    String URL = "\n" + urlText.getText().toString();
+                    String DURATION = "\n" +durationText.getText().toString();
+                    String NOTES = "\n" + notesText.getText().toString();
 
                     FileOutputStream fos = null;
+                    FileOutputStream fOut = null;
+                    try {
+                        fOut = openFileOutput("savedTasks.txt",
+                                MODE_APPEND);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    OutputStreamWriter osw = new OutputStreamWriter(fOut);
+                    try {
+                        osw.write("\n" + FILENAME);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        osw.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        osw.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                     try {
                         fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
                     try {
-                        fos.write(FILENAME.getBytes());
-                        fos.write(url.getBytes());
-                        fos.write(duration.getBytes());
-                        fos.write(notes.getBytes());
+                        fos.write(FILENAME.getBytes()); //write file data for new defined Task
+                        fos.write(URL.getBytes());
+                        fos.write(DURATION.getBytes());
+                        fos.write(NOTES.getBytes());
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     try {
                         fos.close();
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
 
                     Toast.makeText(AddTaskActivity.this, " " + FILENAME + " was added to Task list.", Toast.LENGTH_SHORT).show();
+                    Intent gobackhome = new Intent(AddTaskActivity.this, MainActivity.class);
+                    startActivity(gobackhome);
+
                 }
 
             }
-            
+
         });
     }
 }
