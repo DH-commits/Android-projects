@@ -24,8 +24,10 @@ public class MainActivity extends AppCompatActivity {
     private String TAG = "MainActivity: ";
     private ArrayList<String> tasksArrayList = new ArrayList<String>();
     private ArrayList<String> tasksContentList = new ArrayList<String>();
+    private ArrayList<String> editContentList = new ArrayList<String>();
     private ListView listView;
     private CustomArrayAdapter customArrayAdapter;
+    private String buttonClicked = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: editButtonOnClick");
+                buttonClicked = "editButton";
+                Intent addTaskActivity = new Intent(MainActivity.this, AddTaskActivity.class);
+                addTaskActivity.putExtra("BUTTON_CLICKED", buttonClicked);
+                startActivity(addTaskActivity);
             }
         });
         deleteButton = findViewById(R.id.deleteButton);
@@ -54,7 +60,9 @@ public class MainActivity extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                buttonClicked = "addButton";
                 Intent addTaskActivity = new Intent(MainActivity.this, AddTaskActivity.class);
+                addTaskActivity.putExtra("BUTTON_CLICKED", buttonClicked);
                 startActivity(addTaskActivity);
                 Log.d(TAG, "onClick: Loading new activity -> addTaskActivity");
             }
@@ -70,7 +78,9 @@ public class MainActivity extends AppCompatActivity {
                 //read file storing each line into a variable
                 String url, description, duration = "";
 
-                loadURL(selectedItem, tasksContentList);
+
+                    loadURL(selectedItem, tasksContentList);
+
                 //loadDataIntoListItem(selectedItem, tasksContentList);
 
 
@@ -79,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
     /*Check if savedTasks file exists,
        * if it doesn't exist - return
@@ -172,6 +181,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
 
     }
+
+
 
 
     }
